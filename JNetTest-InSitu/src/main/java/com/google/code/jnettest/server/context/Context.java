@@ -1,5 +1,8 @@
 package com.google.code.jnettest.server.context;
 
-public interface Context {
+import org.springframework.stereotype.Component;
+
+@Component
+public class Context {
 
 }

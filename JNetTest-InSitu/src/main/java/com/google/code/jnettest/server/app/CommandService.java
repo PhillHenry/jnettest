@@ -4,6 +4,6 @@ import com.google.code.jnettest.server.commands.Command;
 
 public interface CommandService {
 
-    public void execute(Command command);
+    public Command execute(Command command);
     
 }
