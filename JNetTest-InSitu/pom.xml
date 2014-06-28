@@ -8,4 +8,13 @@
   <artifactId>JNetTest-InSitu</artifactId>
   <name>JNetTest-InSitu</name>
   <description>The actual deployed artifact that runs in-situ</description>
+  
+  <dependencies>
+      <dependency>
+          <groupId>com.lmax</groupId>
+          <artifactId>disruptor</artifactId>
+          <version>3.2.1</version>
+      </dependency>
+  </dependencies>
+  
 </project>

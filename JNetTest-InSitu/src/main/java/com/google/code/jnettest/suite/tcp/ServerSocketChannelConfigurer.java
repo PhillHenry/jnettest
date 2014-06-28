@@ -20,11 +20,11 @@ public class ServerSocketChannelConfigurer {
         this.serverSocketChannel = serverSocketChannel;
     }
 
-    public void setReceiveBuffer(int receiveBuffer) throws IOException {
-        set(SO_RCVBUF, receiveBuffer);
+    public Integer setReceiveBuffer(int receiveBuffer) throws IOException {
+        return set(SO_RCVBUF, receiveBuffer);
     }
     
-    private <T> void set(SocketOption<T> socketOption, T value) throws IOException {
+    private <T> T set(SocketOption<T> socketOption, T value) throws IOException {
         serverSocketChannel.setOption(socketOption, value);
         T actual = serverSocketChannel.getOption(socketOption);
         if ((actual == null && value != null) 
@@ -32,6 +32,7 @@ public class ServerSocketChannelConfigurer {
                 || !actual.equals(value)) {
             log.warn(String.format("Could not set %s to %s. Actual value is %s", socketOption, value, actual));
         }
+        return actual;
     }
     
 }
