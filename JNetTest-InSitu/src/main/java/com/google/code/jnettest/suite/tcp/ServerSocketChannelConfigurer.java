@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.net.SocketOption;
 import java.nio.channels.ServerSocketChannel;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServerSocketChannelConfigurer {
     
-    private static final Logger log = LogManager.getLogger();
+    private static final Logger log = LoggerFactory.getLogger(ServerSocketChannelConfigurer.class);
     
     private final ServerSocketChannel serverSocketChannel;
     

@@ -8,6 +8,7 @@ import com.google.code.jnettest.server.configuration.DIConfiguration;
 public class Main {
 
     public static void main(String[] args) {
+        Main app = new Main();
     }
     
     private final AnnotationConfigApplicationContext context;

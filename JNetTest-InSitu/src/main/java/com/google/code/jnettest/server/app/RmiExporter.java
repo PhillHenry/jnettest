@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.remoting.rmi.RmiServiceExporter;
 import org.springframework.stereotype.Component;
 
+import com.google.code.jnettest.server.AppConfiguration;
+
 /**
  * Unfortunately, there are currently no Spring annotations for exporting RMI objects.
  * @see https://jira.spring.io/browse/SPR-3926
@@ -23,6 +25,9 @@ public class RmiExporter {
     @Autowired
     private Server server;
     
+    @Autowired
+    private AppConfiguration appConfiguration;
+    
     public RmiExporter() {
     }
     
@@ -31,6 +36,8 @@ public class RmiExporter {
         rmiServiceExporter.setServiceInterface(CommandService.class);
         rmiServiceExporter.setService(server);
         rmiServiceExporter.setServiceName(SERVICE_NAME);
+        rmiServiceExporter.setServicePort(appConfiguration.getLocalRmiPort());
+//        rmiServiceExporter.setRegistryHost(appConfiguration.getLocalInterfaceName());
         rmiServiceExporter.afterPropertiesSet();
     }
     
