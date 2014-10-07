@@ -19,8 +19,13 @@ public class AtomicCounterCondition implements Condition {
     }
 
     @Override
-    public void event() {
-        counter.incrementAndGet();
+    public int event() {
+        return counter.incrementAndGet();
+    }
+
+    @Override
+    public int max() {
+        return maximum;
     }
 
 }

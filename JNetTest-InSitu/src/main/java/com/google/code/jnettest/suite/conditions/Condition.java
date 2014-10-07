@@ -4,5 +4,7 @@ public interface Condition {
     
     public boolean isTrue();
     
-    public void event();
+    public int event();
+    
+    public int max();
 }

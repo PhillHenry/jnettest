@@ -1,14 +1,15 @@
 package com.google.code.jnettest.suite.jetty;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import io.netty.bootstrap.AbstractBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 
-public class JettyConfigurer {
+public class JettyConfigurer implements Serializable {
 
-    public static class OptionValueTuple<T> {
+    public static class OptionValueTuple<T> implements Serializable {
         private final ChannelOption<T> channelOption;
         private final T value;
         
