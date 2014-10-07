@@ -1,5 +1,10 @@
 package com.google.code.jnettest.suite.jetty;
 
+import static io.netty.channel.udt.nio.NioUdtProvider.MESSAGE_PROVIDER;
+
+import java.nio.channels.spi.SelectorProvider;
+import java.util.concurrent.Executor;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -16,10 +21,14 @@ public class JettyServer {
     private final EventLoopGroup  connectGroup;
 
     public JettyServer(int port) {
+        this(port, SelectorProvider.provider());
+    }
+    
+    public JettyServer(int port, SelectorProvider selectorProvider) {
         super();
         this.port       = port;
         bootstrap       = new ServerBootstrap();
-        acceptGroup     = new NioEventLoopGroup();
+        acceptGroup     = new NioEventLoopGroup(0, (Executor)null, selectorProvider); 
         connectGroup    = new NioEventLoopGroup();
     }
 

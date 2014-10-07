@@ -1,5 +1,8 @@
 package com.google.code.jnettest.suite.jetty;
 
+import java.nio.channels.spi.SelectorProvider;
+import java.util.concurrent.Executor;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -15,10 +18,14 @@ public class JettyClient {
     private final EventLoopGroup eventLoopGroup;
 
     public JettyClient(int port, String host) {
+        this(port, host, SelectorProvider.provider());
+    }
+    
+    public JettyClient(int port, String host, SelectorProvider selectorProvider) {
         super();
         this.port       = port;
         this.host       = host;
-        eventLoopGroup  = new NioEventLoopGroup();
+        eventLoopGroup  = new NioEventLoopGroup(0, (Executor)null, selectorProvider);
     }
 
     public Channel start(
