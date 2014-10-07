@@ -26,12 +26,12 @@ public class JettyUdtIntegrationTest extends AbstractJettyIntegrationTest<UdtCha
 
     @Override
     protected JettyServer createJettyServer(int port) {
-        return new JettyServer(port, NioUdtProvider.MESSAGE_PROVIDER);
+        return new JettyServer(port, NioUdtProvider.MESSAGE_PROVIDER, noOpConfigurer);
     }
 
     @Override
     protected JettyClient createJettyClient(int port) {
-        return new JettyClient(port, "localhost", NioUdtProvider.BYTE_PROVIDER);
+        return new JettyClient(port, "localhost", NioUdtProvider.BYTE_PROVIDER, noOpConfigurer);
     }
 
 }

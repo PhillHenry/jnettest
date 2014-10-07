@@ -24,6 +24,8 @@ public abstract class AbstractJettyIntegrationTest<T extends Channel> {
     protected JettyServer jettyServer;
     protected JettyEchoChannelInitializer<T> initializer;
     
+    protected final JettyConfigurer noOpConfigurer = new JettyConfigurer(null);
+    
     @Before
     public void setUp() throws IOException {
         finished = new AtomicCounterCondition(5);
@@ -48,7 +50,7 @@ public abstract class AbstractJettyIntegrationTest<T extends Channel> {
         if (clientChannel != null) clientChannel.close();
     }
 
-    @Test(timeout=5000)
+    @Test//(timeout=5000)
     public void test() throws InterruptedException {
         serverChannel = startServer();
         clientChannel = startClient();

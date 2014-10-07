@@ -22,12 +22,12 @@ public class JettyTcpIntegrationTest extends AbstractJettyIntegrationTest<Socket
 
     @Override
     protected JettyServer createJettyServer(int port) {
-        return new JettyServer(port);
+        return new JettyServer(port, noOpConfigurer);
     }
 
     @Override
     protected JettyClient createJettyClient(int port) {
-        return new JettyClient(port , "localhost");
+        return new JettyClient(port , "localhost", noOpConfigurer);
     }
 
 }
