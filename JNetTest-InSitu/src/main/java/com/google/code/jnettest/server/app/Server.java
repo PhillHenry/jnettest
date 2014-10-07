@@ -13,7 +13,7 @@ public class Server implements CommandService {
     private Context context;
 
     @Override
-    public Command execute(Command command) {
+    public <T extends Command> T execute(T command) {
         command.execute(context);
         return command;
     }
