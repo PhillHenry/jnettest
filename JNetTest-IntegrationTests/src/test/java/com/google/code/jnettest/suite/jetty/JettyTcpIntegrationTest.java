@@ -20,6 +20,8 @@ public class JettyTcpIntegrationTest {
     private JettyClient jettyClient;
     private JettyServer jettyServer;
     private JettyEchoChannelInitializer<SocketChannel> initializer;
+    private Channel serverChannel;
+    private Channel clientChannel;
     
     @Before
     public void setUp() {
@@ -34,12 +36,25 @@ public class JettyTcpIntegrationTest {
     public void teardown() {
         jettyClient.shutdown();
         jettyServer.shutdown();
+        
+        if (serverChannel != null) serverChannel.close();
+        if (clientChannel != null) clientChannel.close();
     }
 
     @Test(timeout=5000)
     public void test() throws InterruptedException {
-        startServer();
-        startClient();
+        serverChannel = startServer();
+        clientChannel = startClient();
+        
+        waitForCondition();
+        
+        assertTrue(finished.isTrue());
+    }
+    
+    private void waitForCondition() throws InterruptedException {
+        while (!finished.isTrue()) {
+            Thread.sleep(100);
+        }
     }
 
     private Channel startClient() throws InterruptedException {

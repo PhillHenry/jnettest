@@ -25,6 +25,7 @@ public class JettyEchoHandlerAdapter extends ChannelHandlerAdapter {
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
         if (continueTest.isTrue()) {
             ctx.write(msg); 
+            continueTest.event();
         }
     }
 

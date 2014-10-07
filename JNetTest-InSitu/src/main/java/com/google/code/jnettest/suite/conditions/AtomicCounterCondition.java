@@ -15,7 +15,7 @@ public class AtomicCounterCondition implements Condition {
 
     @Override
     public boolean isTrue() {
-        return counter.get() > maximum;
+        return counter.get() < maximum;
     }
 
     @Override
