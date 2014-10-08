@@ -6,15 +6,17 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
-public class JettyTcpIntegrationTest extends AbstractJettyIntegrationTest<SocketChannel> {
+public class JettyTcpIntegrationTest extends AbstractJettyIntegrationTest {
     
     protected Channel startClient() throws InterruptedException {
-        Channel channel = jettyClient.start(initializer, NioSocketChannel.class);
+        JettyEchoInitiatingChannelInitializer<SocketChannel> echoInitializer = new JettyEchoInitiatingChannelInitializer(stillWorking, 256);
+        Channel channel = jettyClient.start(echoInitializer, NioSocketChannel.class);
         ChannelFuture succeededFuture = channel.newSucceededFuture();
         return waitForSuccess(succeededFuture);
     }
 
     protected Channel startServer() throws InterruptedException {
+        JettyEchoChannelInitializer<SocketChannel> initializer = new JettyEchoChannelInitializer<>(stillWorking);
         Channel channel = jettyServer.start(initializer, NioServerSocketChannel.class);
         ChannelFuture succeededFuture = channel.newSucceededFuture();
         return waitForSuccess(succeededFuture);

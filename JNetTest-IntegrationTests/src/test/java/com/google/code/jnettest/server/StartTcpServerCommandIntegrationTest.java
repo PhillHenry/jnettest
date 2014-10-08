@@ -16,6 +16,8 @@ import com.google.code.jnettest.server.commands.StartTcpServerCommand;
 import com.google.code.jnettest.server.commands.jetty.StartTcpClientAction;
 import com.google.code.jnettest.server.commands.jetty.StartTcpServerAction;
 import com.google.code.jnettest.server.context.Context;
+import com.google.code.jnettest.server.results.ResultConditionFactory;
+import com.google.code.jnettest.suite.conditions.Condition;
 
 public class StartTcpServerCommandIntegrationTest {
 
@@ -58,14 +60,18 @@ public class StartTcpServerCommandIntegrationTest {
     }
 
     private StartTcpClientAction startClient(int port,
-                                             int numberOfExchanges) throws InterruptedException {
-        StartTcpClientAction clientAction = new StartTcpClientAction(numberOfExchanges,
-                                                                     port,
-                                                                     "localhost",
-                                                                     1024,
-                                                                     1024);
-        Channel clientChannel = clientAction.execute(app.getSpringContext().getBean(Context.class));
-        ChannelFuture succeededFuture = clientChannel.newSucceededFuture();
+                                             int numberOfExchanges)
+            throws InterruptedException {
+        ResultConditionFactory conditionFactory = new ResultConditionFactory(app.getServer());
+        Condition condition = conditionFactory.createCallbackTimerCondition(numberOfExchanges, "client");
+        StartTcpClientAction clientAction   = new StartTcpClientAction(condition,
+                                                                       port,
+                                                                       "localhost",
+                                                                       256,
+                                                                       1024,
+                                                                       1024);
+        Channel             clientChannel   = clientAction.execute(app.getSpringContext().getBean(Context.class));
+        ChannelFuture       succeededFuture = clientChannel.newSucceededFuture();
         assertTrue(succeededFuture.await(1000));
         return clientAction;
     }

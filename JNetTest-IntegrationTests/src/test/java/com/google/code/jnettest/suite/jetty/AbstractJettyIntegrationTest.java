@@ -15,21 +15,19 @@ import com.google.code.jnettest.FreePortFinder;
 import com.google.code.jnettest.suite.conditions.AtomicCounterCondition;
 import com.google.code.jnettest.suite.conditions.Condition;
 
-public abstract class AbstractJettyIntegrationTest<T extends Channel> {
+public abstract class AbstractJettyIntegrationTest {
 
-    private Condition finished;
     private Channel serverChannel;
     private Channel clientChannel;
+    protected Condition stillWorking;
     protected JettyClient jettyClient;
     protected JettyServer jettyServer;
-    protected JettyEchoChannelInitializer<T> initializer;
     
     protected final JettyConfigurer noOpConfigurer = new JettyConfigurer(null);
     
     @Before
     public void setUp() throws IOException {
-        finished = new AtomicCounterCondition(5);
-        initializer = new JettyEchoChannelInitializer<>(finished);
+        stillWorking = new AtomicCounterCondition(5);
         
         int port = new FreePortFinder().getFreePort();
         
@@ -56,8 +54,6 @@ public abstract class AbstractJettyIntegrationTest<T extends Channel> {
         clientChannel = startClient();
         
         waitForCondition();
-        
-        assertTrue(finished.isTrue());
     }
     
     protected abstract Channel startClient() throws InterruptedException;
@@ -65,7 +61,7 @@ public abstract class AbstractJettyIntegrationTest<T extends Channel> {
     protected abstract Channel startServer() throws InterruptedException;
 
     private void waitForCondition() throws InterruptedException {
-        while (!finished.isTrue()) {
+        while (stillWorking.isTrue()) {
             Thread.sleep(100);
         }
     }

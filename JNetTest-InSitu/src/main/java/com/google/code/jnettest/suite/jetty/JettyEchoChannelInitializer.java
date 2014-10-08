@@ -7,7 +7,7 @@ import com.google.code.jnettest.suite.conditions.Condition;
 
 public class JettyEchoChannelInitializer<T extends Channel> extends ChannelInitializer<T> {
 
-    private final Condition continueTest;
+    protected final Condition continueTest;
 
     public JettyEchoChannelInitializer(Condition continueTest) {
         super();
@@ -18,7 +18,12 @@ public class JettyEchoChannelInitializer<T extends Channel> extends ChannelIniti
     protected void initChannel(T ch) throws Exception {
         ch.pipeline().addLast(
 //                new LoggingHandler(INFO),
-                new JettyEchoHandlerAdapter(continueTest));
+                createEchoHandler()
+                );
+    }
+
+    protected JettyEchoHandlerAdapter createEchoHandler() {
+        return new JettyEchoHandlerAdapter(continueTest);
     }
 
 }

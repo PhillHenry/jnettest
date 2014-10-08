@@ -17,36 +17,50 @@ import org.slf4j.LoggerFactory;
 
 import com.google.code.jnettest.server.context.Context;
 import com.google.code.jnettest.suite.conditions.AtomicCounterCondition;
+import com.google.code.jnettest.suite.conditions.CallbackConditionDecorator;
+import com.google.code.jnettest.suite.conditions.CallbackConditionDecorator.ConditionCallback;
 import com.google.code.jnettest.suite.conditions.Condition;
+import com.google.code.jnettest.suite.conditions.TimerConditionDecorator;
 import com.google.code.jnettest.suite.jetty.JettyClient;
 import com.google.code.jnettest.suite.jetty.JettyConfigurer;
 import com.google.code.jnettest.suite.jetty.JettyConfigurer.OptionValueTuple;
 import com.google.code.jnettest.suite.jetty.JettyEchoChannelInitializer;
+import com.google.code.jnettest.suite.jetty.JettyEchoInitiatingChannelInitializer;
 
 public class StartTcpClientAction implements Action<Channel> {
 
     private static Logger         logger = LoggerFactory.getLogger(StartTcpServerAction.class);
 
-    private final int             numberOfExchanges;
     private final int             port;
     private final String          host;
     private final JettyConfigurer configurer;
+    private final int             messageSize;
 
     private Condition finished;
 
-    public StartTcpClientAction(int     numberOfExchanges,
-                                int     port,
-                                String  host,
-                                int     sndBufferSize,
-                                int     rcvBufferSize) {
+
+    public StartTcpClientAction(Condition   finished,
+                                int         port,
+                                String      host,
+                                int         messageSize,
+                                int         sndBufferSize,
+                                int         rcvBufferSize) {
         super();
-        this.numberOfExchanges  = numberOfExchanges;
         this.port               = port;
         this.host               = host;
+        this.messageSize        = messageSize;
+        Set<OptionValueTuple<?>> options = networkOptions(sndBufferSize,
+                                                          rcvBufferSize);
+        this.configurer         = new JettyConfigurer(options);
+        this.finished           = finished;
+    }
+
+    private Set<OptionValueTuple<?>> networkOptions(int sndBufferSize,
+                                                    int rcvBufferSize) {
         Set<OptionValueTuple<?>> options = new HashSet<>();
         options.add(new OptionValueTuple<Integer>(SO_RCVBUF, rcvBufferSize));
         options.add(new OptionValueTuple<Integer>(SO_SNDBUF, sndBufferSize));
-        this.configurer         = new JettyConfigurer(options );
+        return options;
     }
 
     @Override
@@ -63,16 +77,15 @@ public class StartTcpClientAction implements Action<Channel> {
         JettyClient jettyClient = new JettyClient(port,
                                                   host,
                                                   configurer);
-        finished = new AtomicCounterCondition(numberOfExchanges);
         JettyEchoChannelInitializer<SocketChannel> initializer 
-                                = new JettyEchoChannelInitializer<>(finished);
+                                = new JettyEchoInitiatingChannelInitializer<>(finished, messageSize);
         Channel     channel     = jettyClient.start(initializer,
                                                     NioSocketChannel.class);
         return channel;
     }
     
     public boolean isFinished() {
-        return finished.isTrue();
+        return !finished.isTrue();
     }
 
 }
