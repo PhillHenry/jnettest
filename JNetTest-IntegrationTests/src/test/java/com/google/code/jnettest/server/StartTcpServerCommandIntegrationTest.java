@@ -33,8 +33,9 @@ public class StartTcpServerCommandIntegrationTest {
 
     @Test(timeout=2000)
     public void remoteServerShouldRespondToMyClient() throws IOException, InterruptedException {
-        int                     port                = new FreePortFinder().getFreePort();
-        int                     numberOfExchanges   = 1;
+        int port                = new FreePortFinder().getFreePort();
+        int numberOfExchanges   = 1;
+        
         executeRemoteCommandToStartServer(port,
                                           numberOfExchanges);
         
@@ -51,14 +52,13 @@ public class StartTcpServerCommandIntegrationTest {
     }
 
     private void executeRemoteCommandToStartServer(int port,
-                           int numberOfExchanges) {
+                                                   int numberOfExchanges) {
         StartTcpServerCommand   command = new StartTcpServerCommand(numberOfExchanges, port, 1024);
         app.getClient().execute(command);
     }
 
-    private StartTcpClientAction
-            startClient(int port,
-                      int numberOfExchanges) throws InterruptedException {
+    private StartTcpClientAction startClient(int port,
+                                             int numberOfExchanges) throws InterruptedException {
         StartTcpClientAction clientAction = new StartTcpClientAction(numberOfExchanges,
                                                                      port,
                                                                      "localhost",
