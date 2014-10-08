@@ -1,5 +1,6 @@
 package com.google.code.jnettest.suite.jetty;
 
+import static java.util.concurrent.Executors.newCachedThreadPool;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -8,7 +9,6 @@ import io.netty.channel.ServerChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 
 import java.nio.channels.spi.SelectorProvider;
-import java.util.concurrent.Executor;
 
 public class JettyServer {
 
@@ -27,8 +27,10 @@ public class JettyServer {
         this.port       = port;
         this.configurer = configurer;
         bootstrap       = new ServerBootstrap();
-        acceptGroup     = new NioEventLoopGroup(0, (Executor)null, selectorProvider); 
-        connectGroup    = new NioEventLoopGroup();
+        
+        
+        acceptGroup     = new NioEventLoopGroup(1, newCachedThreadPool(new MyThreadFactory("server-accept")), selectorProvider); 
+        connectGroup    = new NioEventLoopGroup(1, newCachedThreadPool(new MyThreadFactory("server-connect")), selectorProvider); 
     }
 
     /**
@@ -42,6 +44,13 @@ public class JettyServer {
                 .channel(channelFactoryClass)
                 .childHandler(echoInitializer);
         configurer.configure(bootstrap);
+        /*
+        bootstrap.group(acceptGroup, connectGroup)
+                .channelFactory(NioUdtProvider.BYTE_ACCEPTOR)
+                .option(ChannelOption.SO_BACKLOG, 10)
+                .handler(new LoggingHandler(LogLevel.INFO))
+                .childHandler(echoInitializer);
+                */
         return start();
     }
 

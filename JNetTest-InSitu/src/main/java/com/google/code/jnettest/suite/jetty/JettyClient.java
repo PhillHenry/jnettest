@@ -1,15 +1,15 @@
 package com.google.code.jnettest.suite.jetty;
 
-import java.nio.channels.spi.SelectorProvider;
-import java.util.concurrent.Executor;
-
+import static java.util.concurrent.Executors.newCachedThreadPool;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.ServerChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.concurrent.Future;
+
+import java.nio.channels.spi.SelectorProvider;
 
 public class JettyClient {
 
@@ -27,13 +27,21 @@ public class JettyClient {
         this.port       = port;
         this.host       = host;
         this.configurer = configurer;
-        eventLoopGroup  = new NioEventLoopGroup(0, (Executor)null, selectorProvider);
+        eventLoopGroup  = new NioEventLoopGroup(1, newCachedThreadPool(new MyThreadFactory("client")), selectorProvider);
     }
 
     public Channel start(
-            JettyEchoChannelInitializer<? extends Channel>  echoInitializer, 
-            Class<? extends Channel>                        channelFactoryClass) 
+            ChannelHandler              echoInitializer, 
+            Class<? extends Channel>    channelFactoryClass) 
                     throws InterruptedException {
+        /*
+        final Bootstrap boot = new Bootstrap();
+        boot.group(eventLoopGroup)
+                .channelFactory(NioUdtProvider.BYTE_CONNECTOR)
+                .handler(echoInitializer);
+        final ChannelFuture channelFuture = boot.connect(host, port).sync();
+        return channelFuture.channel();
+         */
         final Bootstrap bootstrap           = new Bootstrap();
         bootstrap.group(eventLoopGroup)
             .channel(channelFactoryClass)

@@ -16,28 +16,34 @@ public class JettyEchoHandlerAdapter extends ChannelHandlerAdapter {
     
     private final Condition continueTest;
 
+    
     public JettyEchoHandlerAdapter(Condition continueTest) {
         super();
         this.continueTest = continueTest;
     }
 
+//    @Override
+//    public void channelActive(final ChannelHandlerContext ctx) {
+//    }
+
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
         if (continueTest.isTrue()) {
             ctx.write(msg); 
-            continueTest.event();
         }
+        continueTest.event();
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
-        ctx.flush(); 
+        ctx.flush();
     }
 
     @Override
-    public void exceptionCaught(final ChannelHandlerContext ctx,
-            final Throwable cause) {
-        logger.error("Could not echo", cause);
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
+        cause.printStackTrace();
         ctx.close();
     }
+    
+
 }

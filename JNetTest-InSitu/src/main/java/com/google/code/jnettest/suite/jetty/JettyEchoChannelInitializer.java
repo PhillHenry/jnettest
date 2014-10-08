@@ -1,6 +1,7 @@
 package com.google.code.jnettest.suite.jetty;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 
 import com.google.code.jnettest.suite.conditions.Condition;
@@ -22,7 +23,7 @@ public class JettyEchoChannelInitializer<T extends Channel> extends ChannelIniti
                 );
     }
 
-    protected JettyEchoHandlerAdapter createEchoHandler() {
+    protected ChannelHandler createEchoHandler() {
         return new JettyEchoHandlerAdapter(continueTest);
     }
 

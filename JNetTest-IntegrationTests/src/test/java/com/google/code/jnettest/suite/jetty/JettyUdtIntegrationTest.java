@@ -12,15 +12,13 @@ import io.netty.channel.udt.nio.NioUdtByteConnectorChannel;
 import io.netty.channel.udt.nio.NioUdtMessageConnectorChannel;
 import io.netty.channel.udt.nio.NioUdtProvider;
 
-@Ignore
 public class JettyUdtIntegrationTest extends AbstractJettyIntegrationTest {
 
     @Override
     protected Channel startClient() throws InterruptedException {
         try {
             JettyEchoChannelInitializer<UdtChannel> echoInitializer 
-                = new JettyEchoChannelInitializer<>(stillWorking);
-//                = new JettyEchoInitiatingChannelInitializer<>(stillWorking, 256);
+                = new JettyEchoInitiatingChannelInitializer<>(stillWorking, 256);
 //                = new JettyEchoClientHandler(stillWorking, 256);
 //                = new ByteEchoClientHandler();
             Channel channel = jettyClient.start(echoInitializer, NioUdtByteConnectorChannel.class);
@@ -37,12 +35,15 @@ public class JettyUdtIntegrationTest extends AbstractJettyIntegrationTest {
         JettyEchoChannelInitializer<UdtChannel> initializer = new JettyEchoChannelInitializer<>(stillWorking);
         Channel channel = jettyServer.start(initializer, NioUdtByteAcceptorChannel.class);
         ChannelFuture succeededFuture = channel.newSucceededFuture();
+        
+        Thread.sleep(1000);
+        
         return waitForSuccess(succeededFuture);
     }
 
     @Override
     protected JettyServer createJettyServer(int port) {
-        return new JettyServer(port, NioUdtProvider.MESSAGE_PROVIDER, noOpConfigurer);
+        return new JettyServer(port, NioUdtProvider.BYTE_PROVIDER, noOpConfigurer);
     }
 
     @Override

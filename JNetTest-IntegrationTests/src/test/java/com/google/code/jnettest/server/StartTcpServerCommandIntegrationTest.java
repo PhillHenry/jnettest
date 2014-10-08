@@ -33,7 +33,7 @@ public class StartTcpServerCommandIntegrationTest {
         app.shutDown();
     }
 
-    @Test(timeout=2000)
+    @Test//(timeout=2000)
     public void remoteServerShouldRespondToMyClient() throws IOException, InterruptedException {
         int port                = new FreePortFinder().getFreePort();
         int numberOfExchanges   = 1;
