@@ -20,7 +20,7 @@ import com.google.code.jnettest.suite.jetty.JettyConfigurer.OptionValueTuple;
 import com.google.code.jnettest.suite.jetty.JettyEchoChannelInitializer;
 import com.google.code.jnettest.suite.jetty.JettyServer;
 
-public class StartTcpServerAction {
+public class StartTcpServerAction implements Action<Channel> {
 
     private static Logger         logger 
         = LoggerFactory.getLogger(StartTcpServerAction.class);
@@ -39,11 +39,12 @@ public class StartTcpServerAction {
         configurer                      = new JettyConfigurer(params);
     }
 
-    public void execute(Context context) {
+    public Channel execute(Context context) {
         try {
-            startServer(configurer);
+            return startServer(configurer);
         } catch (InterruptedException e) {
             logger.error("Could not start server", e);
+            return null;
         }
     }
 

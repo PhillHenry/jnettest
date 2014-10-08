@@ -1,6 +1,7 @@
 package com.google.code.jnettest.server;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 import com.google.code.jnettest.server.app.CommandService;
 import com.google.code.jnettest.server.app.RmiContext;
@@ -29,6 +30,10 @@ public class Main {
     CommandService getClient() {
         RmiContext rmiContext = context.getBean(RmiContext.class);
         return rmiContext.getClientProxy();
+    }
+    
+    AbstractApplicationContext getSpringContext() {
+        return context;
     }
 
     public void shutDown() {

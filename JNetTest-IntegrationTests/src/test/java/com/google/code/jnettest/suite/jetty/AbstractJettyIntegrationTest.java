@@ -50,7 +50,7 @@ public abstract class AbstractJettyIntegrationTest<T extends Channel> {
         if (clientChannel != null) clientChannel.close();
     }
 
-    @Test//(timeout=5000)
+    @Test(timeout=5000)
     public void test() throws InterruptedException {
         serverChannel = startServer();
         clientChannel = startClient();
